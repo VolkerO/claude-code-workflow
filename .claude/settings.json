@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "statusMessage": "php-cs-fixer (changed file)",
+            "command": "f=$(php -r '$x=json_decode(stream_get_contents(STDIN),true);echo $x[\"tool_input\"][\"file_path\"]??$x[\"tool_response\"][\"filePath\"]??\"\";'); case \"$f\" in *.php) r=$(git -C \"$(dirname \"$f\")\" rev-parse --show-toplevel 2>/dev/null); if [ -n \"$r\" ] && [ -x \"$r/vendor/bin/php-cs-fixer\" ] && [ -f \"$r/.php-cs-fixer.dist.php\" ]; then case \"$f\" in \"$r\"/src/*|\"$r\"/tests/*) \"$r/vendor/bin/php-cs-fixer\" fix \"$f\" --config=\"$r/.php-cs-fixer.dist.php\" --quiet 2>/dev/null || true;; esac; fi;; esac"
+          }
+        ]
+      }
+    ]
+  }
+}
